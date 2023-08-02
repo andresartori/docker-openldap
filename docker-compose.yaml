@@ -1,0 +1,26 @@
+version: 3.5
+services:
+  openldap:
+    container_name: openldap
+    image: osixia/openldap:latest
+    ports:
+      - 389:389
+      - 636:636
+    env:
+      - LDAP_ORGANIZATION="corp"
+      - LDAP_DOMAIN="aph.corp"
+      - LDAP_ADMIN_PASSWORD="Password"
+      - LDAP_BASE_DN="dc=aph,dc=corp"
+    volumes:
+      - /opt/docker/openldap/database:/var/lib/ldap
+      - /opt/docker/openldap/conf:/etc/ldap/slapd.d
+  phpldapadmin:
+    container_name: phpldapadmin
+    image: osixia/phpldapadmin:latest
+    ports:
+      - 8083:80
+      - 8443:443
+    env:
+      - PHPLDAPADMIN_LDAP_HOSTS="openldap"
+    depends_on:
+      - openldap
