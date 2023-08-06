@@ -28,3 +28,11 @@ docker run \
     --env PHPLDAPADMIN_LDAP_HOSTS=ldap.server.local \
     --detach osixia/phpldapadmin:latest
 ```
+# Para verificar os usuários
+```
+docker-compose exec openldap bash
+ldapsearch -x -h openldap -D "uid=ruan,ou=people,dc=example,dc=org" -b "ou=people,dc=example,dc=org" -w "$PASSWORD" -s base 'uid=ruan'
+Or
+ldapwhoami -vvv -h ldap://openldap:389 -p 389 -D 'uid=ruan,ou=people,dc=example,dc=org' -x -w "$PASSWORD"
+```
+

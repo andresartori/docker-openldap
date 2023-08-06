@@ -6,22 +6,59 @@ services:
     ports:
       - 389:389
       - 636:636
+#      hostname: ldap.aph.corp
     environment:
-      LDAP_ORGANIZATION: "APH Corporation"
+      LDAP_ORGANISATION: "APH Corporation"
       LDAP_DOMAIN: "aph.corp"
       LDAP_ADMIN_PASSWORD: "password"
       LDAP_BASE_DN: "dc=aph,dc=corp"
+#      LDAP_TLS: "false"
+#      LDAP_TLS_CRT_FILENAME: "aph.crt"
+#      LDAP_TLS_KEY_FILENAME: "aph.key"
+#      LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+#      - LDAP_CONFIG_PASSWORD=config
+#      - LDAP_RFC2307BIS_SCHEMA=true
+#      - LDAP_REMOVE_CONFIG_AFTER_SETUP=true
+#      - LDAP_TLS_VERIFY_CLIENT=never
     volumes:
       - /opt/docker/openldap/database:/var/lib/ldap
       - /opt/docker/openldap/conf:/etc/ldap/slapd.d
+#      - /opt/docker/openldap/certs:/container/service/slapd/assets/certs
+    networks:
+      - openldap
+
   phpldapadmin:
     container_name: phpldapadmin
     image: osixia/phpldapadmin:latest
     ports:
       - 8083:80
       - 8443:443
+#    hostname: "phpldapadmin"
+#   link: openldap:ldap-host
     environment:
       PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+#     PHPLDAPADMIN_LDAP_HOSTS: "ldap.aph.corp"
       PHPLDAPADMIN_HTTPS: "false"
     depends_on:
       - openldap
+
+#  openldap-ui:
+#    image: wheelybird/ldap-user-manager:v1.5
+#    container_name: openldap-ui
+#    environment:
+#      - LDAP_URI=ldap://openldap
+#      - LDAP_BASE_DN=dc=example,dc=org
+#      - LDAP_REQUIRE_STARTTLS=FALSE
+#      - LDAP_ADMINS_GROUP=admins
+#      - LDAP_ADMIN_BIND_DN=cn=admin,dc=example,dc=org
+#      - LDAP_ADMIN_BIND_PWD=admin
+#      - LDAP_IGNORE_CERT_ERRORS=true
+#      - NO_HTTPS=TRUE
+#      - PASSWORD_HASH=SSHA
+#      - SERVER_HOSTNAME=localhost:18080
+#    depends_on:
+#      - openldap
+#    ports:
+#      - 18080:80
+#    networks:
+#      - openldap
